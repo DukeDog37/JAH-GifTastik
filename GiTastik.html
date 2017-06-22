@@ -10,6 +10,10 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <style>
     /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
+    button{
+      border-left: 5px;
+
+    }
     .row.content {height: 550px}
     
     /* Set gray background color and 100% height */
@@ -18,7 +22,24 @@
       height: 100%;
 
     }
-    
+    #gifs-appear-here{
+      position: relative;
+      float: center;
+      background-color: white;
+      width: 200px;
+      height: 50%;
+      font-size: 20px;
+      display: block;
+    }
+    #gifs-appear-here2{
+      position: relative;
+      float: center;
+      background-color: white;
+      width: 200px;
+      height: 50%;
+      font-size: 20px;
+      display: block;
+    }
     /* On small screens, set height to 'auto' for the grid */
     @media screen and (max-width: 767px) {
       .row.content {height: auto;} 
@@ -43,17 +64,22 @@
     
     <div class="col-sm-9">
       <div class="well">
-        <h4>Dashboard</h4>
+        <h4>Category Listing</h4>
         <div id="buttons">
           <!--This is where the buttons will be placed-->   
 
         </div> 
       </div>
       <div class="row">
-        <div id="gifs-appear-here" class="col-sm-9">
+        <div id="gifs-appear-here" class="col-sm-4">
           
         </div>
-        
+        <div id="empty" class="col-sm-1">
+          
+        </div>
+        <div id="gifs-appear-here2" class="col-sm-4">
+          
+        </div>
       </div>
     </div>
 
@@ -96,8 +122,9 @@
       }).done(function(response) {
         console.log(response);
         
-        $("#gifs-appear-here").empty();//clear the current pics
-
+        //$("#gifs-appear-here").empty();//clear the current pics
+        fnClearGifs();
+        
         var results = response.data;
         //loop through the returned results and place on page
         for (var i = 0; i < results.length; i++) {
@@ -117,8 +144,13 @@
           TopicDiv.append(p);
          
           TopicDiv.append(TopicImage);
+          if(i<5){
+
+            $("#gifs-appear-here").append(TopicDiv);
+          }else{
+            $("#gifs-appear-here2").append(TopicDiv);
+          }
           
-          $("#gifs-appear-here").prepend(TopicDiv);
            
         }
 
