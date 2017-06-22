@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>GifTaskic</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="javascript.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <style>
+    /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
+    .row.content {height: 550px}
+    
+    /* Set gray background color and 100% height */
+    .sidenav {
+      background-color: #f1f1f1;
+      height: 100%;
+
+    }
+    
+    /* On small screens, set height to 'auto' for the grid */
+    @media screen and (max-width: 767px) {
+      .row.content {height: auto;} 
+    }
+  </style>
+</head>
+<body>
+
+<div class="container-fluid">
+  <div class="row content">
+    <div class="col-sm-3 sidenav">
+      <h2>Enter Categories Here:</h2>
+      <input id="userInput">
+      <button onclick="fnNewTopicBtn()">Insert</button>
+      <br>
+      <div id="Userbuttons"> 
+        <!-- This is where the user selected topics will go -->
+
+      </div>
+    </div>
+    <br>
+    
+    <div class="col-sm-9">
+      <div class="well">
+        <h4>Dashboard</h4>
+        <div id="buttons">
+          <!--This is where the buttons will be placed-->   
+
+        </div> 
+      </div>
+      <div class="row">
+        <div id="gifs-appear-here" class="col-sm-9">
+          
+        </div>
+        
+      </div>
+    </div>
+
+  </div>
+</div>
+<script type="text/javascript">
+     $(document).ready(function() {
+
+      // initial array of TOPICS.
+      // Use this array to dynamically create buttons on the screen.
+      var topics = ["Seinfeld", "Dogs", "Clowns", "Crossfit", "Mountain Biking", "Skiing", "Polar Bear", "Falcon", "Redskins", "Nascar"];
+
+      for (var i = 0; i < topics.length; i++) {
+        var TopicBtn = $("<button>");
+
+        TopicBtn.addClass("topic-button topic topic-button-color");
+
+       
+        TopicBtn.attr("data-topic", topics[i]);
+
+       
+        TopicBtn.text(topics[i]);
+
+        
+        $("#buttons").append(TopicBtn);
+
+      }
+
+    //$(".topic-button").on("click", function() {
+      $(document).on('click', '.topic-button',function(){
+        //alert("Button clicked, id "+this.data-topic+", text"+this.innerHTML);
+      var topic = $(this).attr("data-topic");
+      //var topic = "";
+      var queryURL = "http://api.giphy.com/v1/gifs/search?q=" +
+        topic + "&api_key=dc6zaTOxFJmzC&limit=10";
+        //console.log(topic);
+      $.ajax({
+        url: queryURL,
+        method: "GET"
+      }).done(function(response) {
+        console.log(response);
+        
+        $("#gifs-appear-here").empty();//clear the current pics
+
+        var results = response.data;
+        //loop through the returned results and place on page
+        for (var i = 0; i < results.length; i++) {
+          
+          var TopicDiv = $("<div id='imgDiv'>");
+          
+          var p = $("<p>").text("Rating: " + results[i].rating);
+          
+          var TopicImage = $("<img class='gif' data-state='still'>");
+          
+          TopicImage.attr("src", results[i].images.fixed_height_still.url);
+
+          TopicImage.attr("data-still", results[i].images.fixed_height_still.url);
+
+          TopicImage.attr("data-animate", results[i].images.fixed_height.url);
+
+          TopicDiv.append(p);
+         
+          TopicDiv.append(TopicImage);
+          
+          $("#gifs-appear-here").prepend(TopicDiv);
+           
+        }
+
+      });
+
+    
+      
+
+    });
+
+    //animate code here
+    $(document).on("click", ".gif", function() {
+      var state = $(this).attr("data-state");
+      
+      if (state === "still"){
+
+          $(this).attr("src", $(this).attr("data-animate"));
+          $(this).attr("data-state", "animate");
+          
+      }
+      else{
+
+          $(this).attr("src", $(this).attr("data-still"));
+          $(this).attr("data-state", "still");
+          
+      }
+    });
+
+
+    });
+    </script>
+</body>
+</html>
